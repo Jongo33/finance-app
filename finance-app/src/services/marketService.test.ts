@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { NoDataError } from './errors';
 import { MockProvider } from './providers/MockProvider';
 import { fetchHistory, fetchQuotes, setMarketDataProvider } from './marketService';
 
@@ -20,7 +21,19 @@ describe('marketService with MockProvider', () => {
     }
   });
 
-  it('rejects unknown symbols', async () => {
-    await expect(fetchHistory(['NOPE'], '1D')).rejects.toThrow(/Unknown symbol/);
+  it('rejects unknown symbols with NoDataError', async () => {
+    await expect(fetchHistory(['NOPE'], '1D')).rejects.toBeInstanceOf(NoDataError);
+  });
+
+  it('rejects a symbol whose series is empty instead of returning other data', async () => {
+    setMarketDataProvider({
+      getQuotes: async () => [],
+      getHistory: async () => [{ t: 1 }, { close: 2 }] as never,
+    });
+    try {
+      await expect(fetchHistory(['EMPTY'], '1D')).rejects.toThrow('No data available for EMPTY.');
+    } finally {
+      setMarketDataProvider(new MockProvider(() => 1_700_000_000_000));
+    }
   });
 });

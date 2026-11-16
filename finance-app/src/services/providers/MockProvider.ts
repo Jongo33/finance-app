@@ -1,4 +1,5 @@
 import type { PricePoint, Quote, TimeWindow } from '../../types/market';
+import { NoDataError } from '../errors';
 import type { MarketDataProvider } from './MarketDataProvider';
 
 const BASE_PRICE: Record<string, number> = {
@@ -7,6 +8,10 @@ const BASE_PRICE: Record<string, number> = {
   ORCL: 125,
   SAP: 190,
   CRM: 270,
+  // Extra tickers available for the user-selected company chart.
+  AAPL: 230,
+  GOOGL: 175,
+  AMZN: 200,
 };
 
 /** [number of points, step in ms] per window. */
@@ -57,7 +62,7 @@ export class MockProvider implements MarketDataProvider {
 
   private series(symbol: string, window: TimeWindow): PricePoint[] {
     const base = BASE_PRICE[symbol];
-    if (base === undefined) throw new Error(`Unknown symbol: ${symbol}`);
+    if (base === undefined) throw new NoDataError(symbol);
     const [count, step] = WINDOW_SHAPE[window];
     const rand = rng(seedFrom(`${symbol}:${window}`));
     const end = this.now();
