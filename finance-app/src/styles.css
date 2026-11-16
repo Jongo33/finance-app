@@ -28,3 +28,12 @@ body { margin: 0; }
 .state { padding: 24px; text-align: center; }
 .state--error { color: #da1e28; }
 .state--error button { margin-left: 12px; }
+
+.symbol-picker { margin-top: 16px; }
+.symbol-picker label { display: block; font-weight: 600; margin-bottom: 8px; }
+.symbol-picker__row { display: flex; gap: 8px; }
+.symbol-picker input { flex: 1; padding: 8px; border: 1px solid #8d8d8d; border-radius: 4px; }
+.symbol-picker input[aria-invalid='true'] { border-color: #da1e28; }
+.symbol-picker button { padding: 8px 16px; }
+.field-error { color: #da1e28; margin: 8px 0 0; }
+.symbol-picker + .chart-card { margin-top: 16px; }
